@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 
-//引入季节图表组件
-import SeasonalChart from './components/SeasonalChart';
-import SeasonalLineChart from './components/SeasonalLineChart';
-//引入新的3D视图组件
-import Mars3DViewer from './components/Mars3DViewer';
+// 引入页面级组件
+import GlobePage from './pages/GlobePage';
+import DashboardPage from './pages/DashboardPage';
 
 
 function App() {
@@ -56,17 +54,7 @@ function App() {
       </div>
 
       {/* --- 视图切换逻辑 --- */}
-      {viewMode === 'globe' ? <Mars3DViewer /> : (
-        // --- 图表视图 ---
-        <div style={{ 
-            width: '100%', height: '100%', 
-            display: 'flex', justifyContent: 'center', alignItems: 'center',
-            background: 'linear-gradient(to bottom, #000000, #1a1a1a)' // 微渐变背景
-        }}>
-           {viewMode === 'chart' && <SeasonalChart />}
-           {viewMode === 'line-chart' && <SeasonalLineChart />}
-        </div>
-      )}
+      {viewMode === 'globe' ? <GlobePage /> : <DashboardPage viewMode={viewMode} />}
       
     </div>
   );

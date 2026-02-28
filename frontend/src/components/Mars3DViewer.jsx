@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Globe from 'react-globe.gl';
-import axios from 'axios';
 import Webcam from 'react-webcam';
 import { scaleSequential } from 'd3-scale';
 import { interpolateViridis } from 'd3-scale-chromatic';
 import { useHandControl } from '../hooks/useHandControl';
+import { fetchMapData } from '../services/api';
 
 const Mars3DViewer = () => {
     const [mapData, setMapData] = useState({ points: [], minVal: 0, maxVal: 1 });
@@ -22,8 +22,8 @@ const Mars3DViewer = () => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/map/demo');
-                setMapData(response.data);
+                const data = await fetchMapData();
+                setMapData(data);
                 setLoading(false);
             } catch (error) {
                 console.error("数据加载失败", error);
