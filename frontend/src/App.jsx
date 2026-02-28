@@ -11,6 +11,7 @@ import { Camera } from '@mediapipe/camera_utils';
 
 //引入季节图表组件
 import SeasonalChart from './SeasonalChart';
+import SeasonalLineChart from './SeasonalLineChart';
 
 
 function App() {
@@ -224,7 +225,18 @@ function App() {
                 color: 'white', border: '1px solid #555', borderRadius: '4px'
               }}
             >
-              📈 季节热力图
+              📈 季节热力图 (全)
+            </button>
+            <button 
+              onClick={() => setViewMode('line-chart')}
+              style={{
+                padding: '8px 15px', 
+                cursor: 'pointer',
+                background: viewMode === 'line-chart' ? '#2196F3' : '#333',
+                color: 'white', border: '1px solid #555', borderRadius: '4px'
+              }}
+            >
+              📊 纬度带趋势
             </button>
         </div>
 
@@ -262,14 +274,14 @@ function App() {
           />
         </>
       ) : (
-        // --- 模式 2: 图表视图 ---
+        // --- 图表视图 ---
         <div style={{ 
             width: '100%', height: '100%', 
             display: 'flex', justifyContent: 'center', alignItems: 'center',
             background: 'linear-gradient(to bottom, #000000, #1a1a1a)' // 微渐变背景
         }}>
-           {/* 加载我们在上一步写的图表组件 */}
-           <SeasonalChart />
+           {viewMode === 'chart' && <SeasonalChart />}
+           {viewMode === 'line-chart' && <SeasonalLineChart />}
         </div>
       )}
       
