@@ -23,13 +23,17 @@ data_service = OpenMarsDataService(data_dir="openmars")
 ## --- 核心功能：读取数据的接口 (路由层) ---
 
 @app.get("/api/map/demo")
-async def get_demo_map():
+async def get_demo_map(my: int = 27, ls: float = 10):
     """
     获取3D地球点云数据
     路由层职责：接收请求 → 调用服务 → 返回结果
+    
+    Args:
+        my: 火星年 (Martian Year)
+        ls: 季节 (Solar Longitude, 0-360)
     """
     try:
-        result = data_service.get_point_cloud_data()
+        result = data_service.get_point_cloud_data(mars_year=my, solar_longitude=ls)
         return result
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -37,13 +41,16 @@ async def get_demo_map():
         raise HTTPException(status_code=500, detail=f"服务器错误: {str(e)}")
 
 @app.get("/api/chart/seasonal")
-async def get_seasonal_chart():
+async def get_seasonal_chart(my: int = 27):
     """
     获取季节热力图数据（纬向平均）
     路由层职责：接收请求 → 调用服务 → 返回结果
+    
+    Args:
+        my: 火星年 (Martian Year)
     """
     try:
-        result = data_service.get_zonal_mean_data()
+        result = data_service.get_zonal_mean_data(mars_year=my)
         return result
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -51,13 +58,16 @@ async def get_seasonal_chart():
         raise HTTPException(status_code=500, detail=f"服务器错误: {str(e)}")
 
 @app.get("/api/chart/seasonal-bands")
-async def get_seasonal_bands():
+async def get_seasonal_bands(my: int = 27):
     """
     获取纬度带折线图数据
     路由层职责：接收请求 → 调用服务 → 返回结果
+    
+    Args:
+        my: 火星年 (Martian Year)
     """
     try:
-        result = data_service.get_latitudinal_bands_data()
+        result = data_service.get_latitudinal_bands_data(mars_year=my)
         return result
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))

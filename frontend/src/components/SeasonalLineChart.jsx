@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
-import axios from 'axios';
+import { fetchSeasonalBands } from '../services/api';
+import { useDataContext } from '../contexts/DataContext';
 
 const SeasonalLineChart = () => {
     const [chartData, setChartData] = useState(null);
     const [loading, setLoading] = useState(true);
+    
+    // 从全局上下文获取用户选择
+    const { marsYear } = useDataContext();
 
     useEffect(() => {
         async function fetchData() {
+            setLoading(true);
             try {
-                const res = await axios.get('http://127.0.0.1:8000/api/chart/seasonal-bands');
-                setChartData(res.data);
-                setLoading(false);
+                const data = await fetchSeasonalBands(marsYear);
+                setChartData(data);
             } catch (err) {
                 console.error("加载失败", err);
+            } finally {
                 setLoading(false);
             }
         }
         fetchData();
-    }, []);
+    }, [marsYear]); // 当火星年变化时重新加载
 
-    if (loading) return <div style={{ color: 'white' }}>正在计算纬度带数据...</div>;
+    if (loading) return <div style={{ color: 'white' }}>⏳ 正在计算 MY{marsYear} 纬度带数据...</div>;
     if (!chartData) return <div style={{ color: 'white' }}>无数据</div>;
 
     const traces = chartData.bands.map(band => ({
@@ -40,7 +45,7 @@ const SeasonalLineChart = () => {
                     width: 800,
                     height: 400,
                     title: {
-                        text: 'Seasonal Ozone Trend by Latitude Band',
+                        text: `MY${marsYear} - Seasonal Ozone Trend by Latitude Band`,
                         font: { color: 'white' }
                     },
                     xaxis: {
