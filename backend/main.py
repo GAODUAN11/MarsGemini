@@ -69,7 +69,7 @@ async def get_demo_map():
             dataset.append({
                 "lat": flat_lats[i],
                 "lng": flat_lons[i],
-                "val": (flat_vals[i] - min_val) / (max_val - min_val) # 归一化便于前端上色
+                "val": float(flat_vals[i])  # 使用原始值，让前端根据 minVal/maxVal 映射颜色
             })
 
     return {

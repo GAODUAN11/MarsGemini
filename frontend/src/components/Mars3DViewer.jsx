@@ -62,7 +62,7 @@ const Mars3DViewer = () => {
                 pointLng="lng"
                 pointColor={d => colorScale(d.val)}
                 pointAltitude={0.01}
-                pointRadius={0.5}
+                pointRadius={1.2}
             />
         </>
     );
