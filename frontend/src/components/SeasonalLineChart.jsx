@@ -6,7 +6,7 @@ import { useDataContext } from '../contexts/DataContext';
 const SeasonalLineChart = () => {
     const [chartData, setChartData] = useState(null);
     const [loading, setLoading] = useState(true);
-    
+
     // 从全局上下文获取用户选择
     const { marsYear } = useDataContext();
 
@@ -38,7 +38,7 @@ const SeasonalLineChart = () => {
     }));
 
     return (
-        <div style={{ background: 'rgba(255,255,255,0.1)', padding: '20px', borderRadius: '10px', marginTop: '20px' }}>
+        <div style={{ width: '100%', height: '100%' }}>
             <Plot
                 data={traces}
                 layout={{

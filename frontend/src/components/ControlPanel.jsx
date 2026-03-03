@@ -1,135 +1,75 @@
 import React from 'react';
+import { Paper, Typography, Box, FormControl, InputLabel, Select, MenuItem, Divider } from '@mui/material';
 import { useDataContext } from '../contexts/DataContext';
 
-/**
- * 全局控制面板组件
- * 功能：让用户选择火星年(MY)和季节(Ls)
- */
 const ControlPanel = () => {
-    const { 
-        marsYear, 
-        setMarsYear, 
-        solarLongitude, 
-        setSolarLongitude 
-    } = useDataContext();
-
-    // 可用的火星年列表（可根据数据扩展）
+    const { marsYear, setMarsYear, solarLongitude } = useDataContext();
     const availableYears = [27, 28];
 
-    // Ls 对应的季节名称
     const getSeasonName = (ls) => {
-        if (ls >= 0 && ls < 90) return '春季 (Northern Spring)';
-        if (ls >= 90 && ls < 180) return '夏季 (Northern Summer)';
-        if (ls >= 180 && ls < 270) return '秋季 (Northern Fall)';
-        return '冬季 (Northern Winter)';
+        if (ls >= 0 && ls < 90) return 'Northern Spring';
+        if (ls >= 90 && ls < 180) return 'Northern Summer';
+        if (ls >= 180 && ls < 270) return 'Northern Fall';
+        return 'Northern Winter';
     };
 
     return (
-        <div style={styles.container}>
-            <h3 style={styles.title}>🎛️ 数据控制面板</h3>
-            
-            {/* 火星年选择 */}
-            <div style={styles.controlGroup}>
-                <label style={styles.label}>
-                    火星年 (MY):
-                </label>
-                <select 
-                    value={marsYear} 
+        <Paper elevation={8} sx={{
+            p: 3,
+            backdropFilter: 'blur(12px)',
+            bgcolor: 'background.paper',
+            borderRadius: 3,
+            border: '1px solid rgba(255,255,255,0.1)'
+        }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold', letterSpacing: 1 }}>
+                    🚀 核心控制台
+                </Typography>
+            </Box>
+
+            <Divider sx={{ mb: 3, borderColor: 'rgba(255,255,255,0.1)' }} />
+
+            <FormControl fullWidth sx={{ mb: 3 }}>
+                <InputLabel id="my-select-label" sx={{ color: 'primary.main' }}>火星年 (Martian Year)</InputLabel>
+                <Select
+                    labelId="my-select-label"
+                    value={marsYear}
+                    label="火星年 (Martian Year)"
                     onChange={(e) => setMarsYear(Number(e.target.value))}
-                    style={styles.select}
+                    sx={{
+                        color: 'white',
+                        '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(0, 240, 255, 0.3)' },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
+                        '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' }
+                    }}
                 >
                     {availableYears.map(year => (
-                        <option key={year} value={year}>
-                            MY {year}
-                        </option>
+                        <MenuItem key={year} value={year}>MY {year}</MenuItem>
                     ))}
-                </select>
-            </div>
+                </Select>
+            </FormControl>
 
-            {/* 季节滑动条 */}
-            <div style={styles.controlGroup}>
-                <label style={styles.label}>
-                    季节 (Ls): {solarLongitude}°
-                </label>
-                <input 
-                    type="range" 
-                    min="0" 
-                    max="360" 
-                    step="1"
-                    value={solarLongitude}
-                    onChange={(e) => setSolarLongitude(Number(e.target.value))}
-                    style={styles.slider}
-                />
-                <div style={styles.seasonInfo}>
+            <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'rgba(0,0,0,0.3)', borderLeft: '4px solid #E55934' }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>当前气象状态</Typography>
+                <Typography variant="body1" sx={{ color: '#E55934', fontWeight: 'bold' }}>
+                    Ls = {solarLongitude}°
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'white', mt: 0.5 }}>
                     {getSeasonName(solarLongitude)}
-                </div>
-            </div>
+                </Typography>
+            </Box>
 
-            {/* Ls 刻度参考 */}
-            <div style={styles.lsReference}>
-                <small>
-                    春: 0° | 夏: 90° | 秋: 180° | 冬: 270°
-                </small>
-            </div>
-        </div>
+            <Box sx={{ mt: 3, p: 2, borderRadius: 2, bgcolor: 'rgba(0,240,255,0.05)', border: '1px solid rgba(0,240,255,0.2)' }}>
+                <Typography variant="caption" sx={{ color: 'primary.main', display: 'block', mb: 1, fontWeight: 'bold' }}>
+                    🤖 Oracle AI 洞察
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
+                    预测模型已就绪。观测点云数据表明，当前季节极地与中纬度区域臭氧产生明显交换活动...
+                </Typography>
+            </Box>
+
+        </Paper>
     );
-};
-
-const styles = {
-    container: {
-        background: 'rgba(0, 0, 0, 0.8)',
-        border: '1px solid #555',
-        borderRadius: '8px',
-        padding: '15px',
-        minWidth: '280px',
-        color: 'white'
-    },
-    title: {
-        margin: '0 0 15px 0',
-        fontSize: '16px',
-        borderBottom: '1px solid #555',
-        paddingBottom: '10px'
-    },
-    controlGroup: {
-        marginBottom: '15px'
-    },
-    label: {
-        display: 'block',
-        marginBottom: '8px',
-        fontSize: '14px',
-        fontWeight: 'bold'
-    },
-    select: {
-        width: '100%',
-        padding: '8px',
-        fontSize: '14px',
-        background: '#333',
-        color: 'white',
-        border: '1px solid #555',
-        borderRadius: '4px',
-        cursor: 'pointer'
-    },
-    slider: {
-        width: '100%',
-        height: '8px',
-        borderRadius: '5px',
-        background: '#555',
-        outline: 'none',
-        cursor: 'pointer'
-    },
-    seasonInfo: {
-        marginTop: '8px',
-        fontSize: '13px',
-        color: '#4CAF50',
-        fontStyle: 'italic'
-    },
-    lsReference: {
-        marginTop: '10px',
-        paddingTop: '10px',
-        borderTop: '1px solid #444',
-        textAlign: 'center',
-        color: '#888'
-    }
 };
 
 export default ControlPanel;

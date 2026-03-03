@@ -1,72 +1,69 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Box, Typography, Paper } from '@mui/material';
 
 // 引入页面级组件
-import GlobePage from './pages/GlobePage';
-import DashboardPage from './pages/DashboardPage';
+import Mars3DViewer from './components/Mars3DViewer';
 import ControlPanel from './components/ControlPanel';
+import SeasonalChart from './components/SeasonalChart';
+import SeasonalLineChart from './components/SeasonalLineChart';
+import TimelinePlayer from './components/TimelinePlayer';
 
 // 引入全局状态管理
 import { DataProvider } from './contexts/DataContext';
 
-
 function App() {
-  const [viewMode, setViewMode] = useState('globe'); // 'globe' 或 'chart'
-
   return (
     <DataProvider>
-      <div style={{ width: '100vw', height: '100vh', background: '#000', position: 'relative', overflow: 'hidden' }}>
-      
-        {/* --- UI 层：标题与控制栏 --- */}
-        <div style={{ position: 'absolute', top: 20, left: 20, color: 'white', zIndex: 100 }}>
-          <h1>火星臭氧可视化平台</h1>
-          
-          {/* 切换按钮 */}
-          <div style={{ display: 'flex', gap: '10px', margin: '10px 0' }}>
-              <button 
-                onClick={() => setViewMode('globe')}
-                style={{
-                  padding: '8px 15px', 
-                  cursor: 'pointer',
-                  background: viewMode === 'globe' ? '#2196F3' : '#333',
-                  color: 'white', border: '1px solid #555', borderRadius: '4px'
-                }}
-              >
-                🌍 3D 手势地球
-              </button>
-              <button 
-                onClick={() => setViewMode('chart')}
-                style={{
-                  padding: '8px 15px', 
-                  cursor: 'pointer',
-                  background: viewMode === 'chart' ? '#2196F3' : '#333',
-                  color: 'white', border: '1px solid #555', borderRadius: '4px'
-                }}
-              >
-                📈 季节热力图 (全)
-              </button>
-              <button 
-                onClick={() => setViewMode('line-chart')}
-                style={{
-                  padding: '8px 15px', 
-                  cursor: 'pointer',
-                  background: viewMode === 'line-chart' ? '#2196F3' : '#333',
-                  color: 'white', border: '1px solid #555', borderRadius: '4px'
-                }}
-              >
-                📊 纬度带趋势
-              </button>
-          </div>
+      <Box sx={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden', bgcolor: 'background.default' }}>
 
-          {/* 全局控制面板 */}
-          <div style={{ marginTop: '20px' }}>
-            <ControlPanel />
-          </div>
-        </div>
+        {/* 底层：3D 地球全屏展示 */}
+        <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>
+          <Mars3DViewer />
+        </Box>
 
-        {/* --- 视图切换逻辑 --- */}
-        {viewMode === 'globe' ? <GlobePage /> : <DashboardPage viewMode={viewMode} />}
-        
-      </div>
+        {/* 顶层 UI：极简科技感标题 */}
+        <Box sx={{ position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 10, pointerEvents: 'none' }}>
+          <Typography variant="h4" sx={{
+            fontWeight: 800,
+            color: 'white',
+            textShadow: '0 0 15px rgba(0, 240, 255, 0.9)',
+            letterSpacing: 4,
+            fontFamily: 'sans-serif'
+          }}>
+            MARS ORACLE DASHBOARD
+          </Typography>
+        </Box>
+
+        {/* 左侧控制区 */}
+        <Box sx={{ position: 'absolute', top: 100, left: 20, width: 340, zIndex: 10 }}>
+          <ControlPanel />
+        </Box>
+
+        {/* 右侧分析看板区 */}
+        <Box sx={{
+          position: 'absolute', top: 100, right: 20, width: 480, bottom: 80, zIndex: 10,
+          display: 'flex', flexDirection: 'column', gap: 3,
+          overflowY: 'auto', '&::-webkit-scrollbar': { width: 0 }
+        }}>
+          {/* 这里我们暂时使用 CSS scale 来处理老图表的尺寸，下个任务我们去重构图表组件本身 */}
+          <Paper elevation={8} sx={{ p: 2, backdropFilter: 'blur(12px)', bgcolor: 'background.paper', borderRadius: 3, border: '1px solid rgba(0,240,255,0.2)' }}>
+            <Typography variant="h6" sx={{ color: 'primary.main', mb: 1, fontWeight: 'bold' }}>☄️ 季节热力分布 (Ls-Lat)</Typography>
+            <Box sx={{ transform: 'scale(0.55)', transformOrigin: 'top left', width: '181%', height: 260 }}>
+              <SeasonalChart />
+            </Box>
+          </Paper>
+
+          <Paper elevation={8} sx={{ p: 2, backdropFilter: 'blur(12px)', bgcolor: 'background.paper', borderRadius: 3, border: '1px solid rgba(229,89,52,0.2)' }}>
+            <Typography variant="h6" sx={{ color: 'secondary.main', mb: 1, fontWeight: 'bold' }}>📊 纬度带演化趋势</Typography>
+            <Box sx={{ transform: 'scale(0.55)', transformOrigin: 'top left', width: '181%', height: 260 }}>
+              <SeasonalLineChart />
+            </Box>
+          </Paper>
+        </Box>
+
+        {/* 底部时间轴留位 (TimelinePlayer) */}
+
+      </Box>
     </DataProvider>
   );
 }
